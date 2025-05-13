@@ -137,3 +137,25 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running at http://0.0.0.0:${PORT}`);
 });
 
+// Reset all team progress and scores (admin route)
+app.post("/admin/reset", (req, res) => {
+  fs.readFile(TEAMS_FILE, "utf8", (err, data) => {
+    if (err) return res.status(500).json({ error: "Could not read teams file." });
+
+    let teams = JSON.parse(data);
+    teams = teams.map(team => ({
+      ...team,
+      score: 0,
+      lettersUnlocked: [],
+      answeredQuestions: [],
+      updatedAt: new Date().toISOString()
+    }));
+
+    fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2), err => {
+      if (err) return res.status(500).json({ error: "Could not write teams file." });
+      res.json({ message: "Teams reset successfully." });
+    });
+  });
+});
+
+
