@@ -1,0 +1,46 @@
+[
+  {
+    "teamCode": "TEAM123",
+    "teamName": "Alpha Warriors",
+    "score": 10,
+    "updatedAt": "2025-05-13T10:42:00Z",
+    "lettersUnlocked": [
+      "R"
+    ],
+    "answeredQuestions": [
+      "question1"
+    ]
+  },
+  {
+    "teamCode": "TEAM456",
+    "teamName": "Beta Blazers",
+    "score": 0,
+    "updatedAt": "2025-05-13T10:42:00Z",
+    "lettersUnlocked": [],
+    "answeredQuestions": []
+  },
+  {
+    "teamCode": "TEAM789",
+    "teamName": "Gamma Ninjas",
+    "score": 0,
+    "updatedAt": "2025-05-13T10:42:00Z",
+    "lettersUnlocked": [],
+    "answeredQuestions": []
+  },
+  {
+    "teamCode": "TEAMabc",
+    "teamName": "Zeta Ninjas",
+    "score": 0,
+    "updatedAt": "2025-05-13T10:42:00Z",
+    "lettersUnlocked": [],
+    "answeredQuestions": []
+  },
+  {
+    "teamCode": "TEAMxyz",
+    "teamName": "Theta Ninjas",
+    "score": 0,
+    "updatedAt": "2025-05-13T10:42:00Z",
+    "lettersUnlocked": [],
+    "answeredQuestions": []
+  }
+]
