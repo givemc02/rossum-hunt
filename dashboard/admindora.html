@@ -1,0 +1,79 @@
+<!-- dashboard/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - ROSSUM</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 { color: #ff4081; }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff4081;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+  <button onclick="resetAll()">🔄 Reset All</button>
+  <h2>Leaderboard</h2>
+  <ul id="leaderboard"></ul>
+
+  <script>
+    const API_URL = "https://rossum-hunt.onrender.com";
+
+    async function fetchTeams() {
+      const res = await fetch(`${API_URL}/teams`);
+      const teams = await res.json();
+
+      const leaderboard = document.getElementById("leaderboard");
+      leaderboard.innerHTML = "";
+
+      teams.sort((a, b) => b.score - a.score).forEach(team => {
+        const li = document.createElement("li");
+        li.textContent = `${team.teamName} - Score: ${team.score} - Letters: ${team.lettersUnlocked.join("")}`;
+        leaderboard.appendChild(li);
+      });
+    }
+
+    async function resetAll() {
+      if (!confirm("Are you sure you want to reset all scores and progress?")) return;
+
+      const res = await fetch(`${API_URL}/admin/reset`, {
+        method: "POST"
+      });
+
+      if (res.ok) {
+        alert("All team progress reset.");
+        fetchTeams();
+      } else {
+        alert("Failed to reset.");
+      }
+    }
+
+    fetchTeams();
+  </script>
+</body>
+</html>
