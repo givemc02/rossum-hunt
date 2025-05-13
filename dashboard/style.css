@@ -1,0 +1,149 @@
+/* dashboard/style.css */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
+  margin: 0;
+  padding: 0;
+  color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 600px;
+  width: 90%;
+  padding: 2.5em;
+  border-radius: 12px;
+  background-color: #1e1e2f;
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
+  position: relative;
+  animation: glowPulse 2.5s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from {
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
+  }
+  to {
+    box-shadow: 0 0 40px rgba(138, 43, 226, 0.9);
+  }
+}
+
+h1 {
+  font-size: xx-large;
+  text-align: center;
+  color: aquamarine;
+}
+
+h2 {
+  text-align: center;
+  color: #ffffff;
+}
+
+p{
+  font-size: large;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+  margin-top: 1em;
+}
+
+input[type="text"] {
+  padding: 0.85em;
+  font-size: 1em;
+  border-radius: 8px;
+  border: none;
+  background-color: #2a2a3d;
+  color: #fff;
+  outline: none;
+}
+
+input[type="text"]::placeholder {
+  color: #aaa;
+}
+
+button {
+  padding: 0.85em;
+  font-size: 1em;
+  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #4a00e0, #8e2de2);
+}
+
+ul#leaderboard {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1.5em;
+}
+
+/* ul#leaderboard li {
+  background: #2f2f47;
+  color: #f0f0f0;
+  padding: 0.6em;
+  margin-bottom: 0.5em;
+  border-radius: 6px;
+} */
+
+ul#leaderboard li {
+  background: #2f2f47;
+  color: #f0f0f0;
+  padding: 0.6em;
+  margin-bottom: 0.5em;
+  border-radius: 6px;
+  position: relative;
+  animation: slideIn 0.5s ease;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+ul#leaderboard li:hover {
+  transform: scale(1.02);
+  background: #3a3a5a;
+}
+
+ul#leaderboard .rank {
+  font-weight: bold;
+  margin-right: 10px;
+  color: #aaa;
+}
+
+ul#leaderboard .gold {
+  background: linear-gradient(90deg, #FFD700, #FFC107);
+  color: #000;
+}
+ul#leaderboard .silver {
+  background: linear-gradient(90deg, #C0C0C0, #bcbcbc);
+  color: #000;
+}
+ul#leaderboard .bronze {
+  background: linear-gradient(90deg, #cd7f32, #c56b1f);
+  color: #000;
+}
+
+ul#leaderboard .current-team {
+  border: 2px solid #8e2de2;
+  box-shadow: 0 0 10px #8e2de2;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
