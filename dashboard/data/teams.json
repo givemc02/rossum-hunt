@@ -2,14 +2,10 @@
   {
     "teamCode": "TEAM123",
     "teamName": "Alpha Warriors",
-    "score": 10,
+    "score": 0,
     "updatedAt": "2025-05-13T10:42:00Z",
-    "lettersUnlocked": [
-      "R"
-    ],
-    "answeredQuestions": [
-      "question1"
-    ]
+    "lettersUnlocked": [],
+    "answeredQuestions": []
   },
   {
     "teamCode": "TEAM456",
