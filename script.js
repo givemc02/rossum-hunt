@@ -1,0 +1,60 @@
+// dashboard/script.js
+let teamsData = [];
+const IPV4 = "http://172.16.45.140:3000/"
+async function loadTeams() {
+  const res = await fetch(IPV4 + "teams");
+  teamsData = await res.json();
+}
+
+function showDashboard() {
+  const teamCode = localStorage.getItem("teamCode");
+  if (!teamCode) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const team = teamsData.find(t => t.teamCode === teamCode);
+  if (!team) {
+    alert("Team not found.");
+    localStorage.removeItem("teamCode");
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("teamInfo").innerText = `Hello ${team.teamName}! Your Score: ${team.score}`;
+  document.getElementById("letters").innerText = team.lettersUnlocked.join(" ") || "None";
+
+  const leaderboard = document.getElementById("leaderboard");
+  leaderboard.innerHTML = "";
+
+  teamsData
+  .sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+
+    const dateA = new Date(a.updatedAt || 0);
+    const dateB = new Date(b.updatedAt || 0);
+
+    return dateA - dateB;
+  })
+  .forEach((t, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="rank">#${index + 1}</span> ${t.teamName}: <strong>${t.score}</strong>`;
+
+    if (t.teamCode === teamCode) {
+      li.classList.add("current-team");
+    }
+
+    if (index === 0) li.classList.add("gold");
+    else if (index === 1) li.classList.add("silver");
+    else if (index === 2) li.classList.add("bronze");
+
+    leaderboard.appendChild(li);
+  });
+
+}
+
+
+window.onload = async () => {
+  await loadTeams();
+  showDashboard();
+};

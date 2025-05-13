@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QR Challenge - Question 1</title>
+  <link rel="stylesheet" href="qstyle.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>QR Challenge</h2>
+
+    <form id="teamAuthForm">
+      <input type="text" id="teamCode" placeholder="Enter your team code" required />
+      <button type="submit">Start</button>
+    </form>
+
+    <div id="questionBox" style="display: none;">
+      <div id="questionText" class="question-block"></div>
+      <input type="text" id="answer" placeholder="Enter your answer" />
+      <button onclick="submitAnswer()">Submit Answer</button>
+    </div>
+  </div>
+
+  <script>
+    const SERVER_URL = "http://172.16.45.140:3000"; // Adjust if hosted elsewhere
+    const questionId = "question1"; // Change this ID for other pages (e.g., question2, etc.)
+    let currentTeamCode = null;
+
+    document.getElementById("teamAuthForm").onsubmit = async function (e) {
+      e.preventDefault();
+      const code = document.getElementById("teamCode").value.trim();
+      if (!code) return alert("Enter a valid team code.");
+      currentTeamCode = code;
+
+      try {
+        const res = await fetch(`${SERVER_URL}/get-question`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ teamCode: currentTeamCode, questionId })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById("teamAuthForm").style.display = "none";
+          document.getElementById("questionBox").style.display = "block";
+          document.getElementById("questionText").innerText = data.question;
+
+        } else {
+          alert(data.error || "Failed to load question.");
+        }
+      } catch (err) {
+        alert("Error connecting to server.");
+      }
+    };
+
+    async function submitAnswer() {
+      const answer = document.getElementById("answer").value.trim();
+
+      try {
+        const res = await fetch(`${SERVER_URL}/submit-answer`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ teamCode: currentTeamCode, questionId, answer })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert("Correct! Redirecting to dashboard...");
+          localStorage.setItem("teamCode", currentTeamCode);
+          window.location.href = "index.html";
+        } else {
+          alert(data.error || "Incorrect answer.");
+        }
+      } catch (err) {
+        alert("Failed to submit answer.");
+      }
+    }
+  </script>
+</body>
+</html>
