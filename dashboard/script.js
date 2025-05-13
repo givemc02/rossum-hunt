@@ -1,6 +1,6 @@
 // dashboard/script.js
 let teamsData = [];
-const IPV4 = "http://172.16.45.140:3000/"
+const IPV4 = "https://rossum-hunt.onrender.com"
 async function loadTeams() {
   const res = await fetch(IPV4 + "teams");
   teamsData = await res.json();
