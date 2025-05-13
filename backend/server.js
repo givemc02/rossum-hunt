@@ -118,9 +118,13 @@ app.post("/submit-answer", (req, res) => {
       return res.status(400).json({ error: `Invalid letter. Expected '${expectedNextLetter}' next` });
     }
 
-    team.score += expected.points;
-    team.lettersUnlocked.push(expected.letter);
-    team.answeredQuestions.push(questionId);
+    team.updatedAt = new Date().toISOString();
+
+team.score += expected.points;
+team.lettersUnlocked.push(expected.letter);
+team.answeredQuestions.push(questionId);
+team.updatedAt = new Date().toISOString(); // ← Add this
+
 
     fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2), (err) => {
       if (err) return res.status(500).json({ error: "Failed to update team file" });
