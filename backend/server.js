@@ -33,9 +33,9 @@ const correctAnswers = {
   }
 };
 
-
 // Expected letter sequence
 const correctSequence = ["R", "O", "S", "S", "U", "M"];
+
 
 // Per-team custom questions
 const teamQuestions = {
@@ -58,6 +58,15 @@ const teamQuestions = {
   }
 };
 
+// Score-based riddles
+const scoreRiddles = {
+  10: "Next QR Destination Riddle: 'I speak without a mouth and hear without ears. What am I?'",
+  20: "Next QR Destination Riddle: 'I am not alive, but I grow; I don’t have lungs, but I need air.'",
+  30: "Next QR Destination Riddle: 'I have keys but no locks. I have space but no room.'",
+  40: "Next QR Destination Riddle: 'I fly without wings. I cry without eyes. What am I?'",
+  50: "Next QR Destination Riddle: 'The more you take, the more you leave behind. What are they?'",
+  60: "Next QR Destination Riddle: 'I’m the end of the hunt. Find me where winners shine!'"
+};
 
 // Endpoint to get question for a specific team
 app.post("/get-question", (req, res) => {
@@ -72,7 +81,6 @@ app.post("/get-question", (req, res) => {
   res.json({ question: teamSet[questionId] });
 });
 
-
 // Endpoint to retrieve all teams
 app.get("/teams", (req, res) => {
   fs.readFile(TEAMS_FILE, "utf8", (err, data) => {
@@ -80,6 +88,28 @@ app.get("/teams", (req, res) => {
     res.json(JSON.parse(data));
   });
 });
+
+// Get riddle for a team based on score
+app.post("/get-riddle", (req, res) => {
+  const { teamCode } = req.body;
+
+  fs.readFile(TEAMS_FILE, "utf8", (err, data) => {
+    if (err) return res.status(500).json({ error: "Failed to read teams file" });
+
+    const teams = JSON.parse(data);
+    const team = teams.find(t => t.teamCode === teamCode);
+    if (!team) return res.status(404).json({ error: "Team not found" });
+
+    const riddle = scoreRiddles[team.score];
+    if (!riddle) return res.status(404).json({ error: "No riddle available for this score" });
+
+    // If score is 60, also include winner flag
+    const isWinner = team.score === 60;
+
+    res.json({ riddle, winner: isWinner });
+  });
+});
+
 
 // Answer submission handler
 app.post("/submit-answer", (req, res) => {
