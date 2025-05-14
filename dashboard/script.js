@@ -24,7 +24,8 @@ function showDashboard() {
   document.getElementById("teamInfo").innerText = `Hello ${team.teamName}! Your Score: ${team.score}`;
   document.getElementById("letters").innerText = team.lettersUnlocked.join(" ") || "None";
 
-  // Fetch and display the current riddle
+// Fetch and display the current riddle
+// Load team-specific riddle
 fetch(IPV4 + "get-riddle", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -32,50 +33,59 @@ fetch(IPV4 + "get-riddle", {
 })
 .then(res => res.json())
 .then(data => {
+  const riddleElem = document.getElementById("riddle");
   if (data.riddle) {
-    document.getElementById("riddle").innerText = data.riddle;
+    riddleElem.innerText = `Next QR Destination Riddle: ${data.riddle}`;
   } else {
-    document.getElementById("riddle").innerText = "No riddle yet. Solve more questions!";
+    riddleElem.innerText = "You've completed the hunt! 🏁";
   }
 })
-.catch(err => {
-  console.error("Failed to fetch riddle:", err);
-  document.getElementById("riddle").innerText = "Error loading riddle.";
+.catch(() => {
+  document.getElementById("riddle").innerText = "Unable to load riddle.";
 });
+
 
 
   const leaderboard = document.getElementById("leaderboard");
   leaderboard.innerHTML = "";
 
-  teamsData
+// First, identify the winner: first team to reach 60
+let winnerTeamCode = null;
+
+teamsData.forEach(t => {
+  if (t.score === 60) {
+    if (
+      !winnerTeamCode ||
+      new Date(t.updatedAt) < new Date(teamsData.find(x => x.teamCode === winnerTeamCode)?.updatedAt)
+    ) {
+      winnerTeamCode = t.teamCode;
+    }
+  }
+});
+
+// Sort for leaderboard
+teamsData
   .sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
-
-    const dateA = new Date(a.updatedAt || 0);
-    const dateB = new Date(b.updatedAt || 0);
-
-    return dateA - dateB;  // Fix: show earlier scorer higher
+    return new Date(a.updatedAt || 0) - new Date(b.updatedAt || 0);
   })
-
   .forEach((t, index) => {
     const li = document.createElement("li");
-    let winnerTag = (t.score === 60) ? ` <span class="winner">🏆 Winner</span>` : "";
+
+    let winnerTag = (t.teamCode === winnerTeamCode)
+      ? `<span class="winner">🏆 Winner</span>`
+      : "";
+
     li.innerHTML = `<span class="rank">#${index + 1}</span> ${t.teamName}${winnerTag}: <strong>${t.score}</strong>`;
 
-
-    if (t.teamCode === teamCode) {
-      li.classList.add("current-team");
-    }
-
+    if (t.teamCode === teamCode) li.classList.add("current-team");
     if (index === 0) li.classList.add("gold");
     else if (index === 1) li.classList.add("silver");
     else if (index === 2) li.classList.add("bronze");
 
     leaderboard.appendChild(li);
   });
-
 }
-
 
 window.onload = async () => {
   await loadTeams();
