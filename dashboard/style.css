@@ -89,14 +89,6 @@ ul#leaderboard {
   margin-top: 1.5em;
 }
 
-/* ul#leaderboard li {
-  background: #2f2f47;
-  color: #f0f0f0;
-  padding: 0.6em;
-  margin-bottom: 0.5em;
-  border-radius: 6px;
-} */
-
 ul#leaderboard li {
   background: #2f2f47;
   color: #f0f0f0;
@@ -178,7 +170,6 @@ ul#leaderboard .current-team {
 .entry-left {
   display: flex;
   align-items: center;
-  font-weight: bold;
   gap: 8px;
 }
 
