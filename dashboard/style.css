@@ -149,10 +149,15 @@ ul#leaderboard .current-team {
 }
 
 .winner {
-  color: gold;
+  margin-left: 12px;
+  padding: 2px 6px;
+  background-color: gold;
+  color: black;
   font-weight: bold;
-  margin-left: 8px;
+  border-radius: 5px;
+  font-size: 0.9em;
 }
+
 .riddle-box {
   margin-top: 15px;
   font-style: italic;
