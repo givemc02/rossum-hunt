@@ -153,4 +153,13 @@ ul#leaderboard .current-team {
   font-weight: bold;
   margin-left: 8px;
 }
+.riddle-box {
+  margin-top: 15px;
+  font-style: italic;
+  background: linear-gradient(to right, #111, #222);
+  padding: 10px;
+  border-left: 4px solid #44ff99;
+  color: #eee;
+}
+
 
