@@ -167,4 +167,35 @@ ul#leaderboard .current-team {
   color: #eee;
 }
 
+/* Leaderboard row layout */
+.leaderboard-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Left side content: rank, name, score */
+.entry-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Right side Winner badge */
+.winner-badge {
+  background-color: black;
+  color: gold;
+  padding: 4px 10px;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-left: 16px;
+  font-size: 0.95em;
+}
+
+/* Optional: gold background box for first place */
+.gold {
+  background-color: #ffca28;
+  padding: 10px;
+  border-radius: 6px;
+}
 
