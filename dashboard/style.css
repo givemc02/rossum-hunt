@@ -178,6 +178,7 @@ ul#leaderboard .current-team {
 .entry-left {
   display: flex;
   align-items: center;
+  font-weight: bold;
   gap: 8px;
 }
 
