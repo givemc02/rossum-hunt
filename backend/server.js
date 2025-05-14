@@ -89,27 +89,21 @@ app.get("/teams", (req, res) => {
   });
 });
 
-// Get riddle for a team based on score
 app.post("/get-riddle", (req, res) => {
   const { teamCode } = req.body;
+  if (!teamCode) return res.status(400).json({ error: "Missing team code." });
 
   fs.readFile(TEAMS_FILE, "utf8", (err, data) => {
-    if (err) return res.status(500).json({ error: "Failed to read teams file" });
+    if (err) return res.status(500).json({ error: "Could not read teams file." });
 
     const teams = JSON.parse(data);
     const team = teams.find(t => t.teamCode === teamCode);
     if (!team) return res.status(404).json({ error: "Team not found" });
 
-    const riddle = scoreRiddles[team.score];
-    if (!riddle) return res.status(404).json({ error: "No riddle available for this score" });
-
-    // If score is 60, also include winner flag
-    const isWinner = team.score === 60;
-
-    res.json({ riddle, winner: isWinner });
+    const riddle = scoreRiddles[team.score] || null;
+    res.json({ riddle });
   });
 });
-
 
 // Answer submission handler
 app.post("/submit-answer", (req, res) => {
