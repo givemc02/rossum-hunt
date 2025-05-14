@@ -76,7 +76,21 @@ teamsData
       ? `<span class="winner">🏆 Winner</span>`
       : "";
 
-    li.innerHTML = `<span class="rank">#${index + 1}</span> ${t.teamName}${winnerTag}: <strong>${t.score}</strong>`;
+    const isWinner = t.score === 60 && teamsData.every(other =>
+  other.teamCode === t.teamCode || other.score < 60 || new Date(t.updatedAt) < new Date(other.updatedAt)
+);
+
+li.innerHTML = `
+  <div class="leaderboard-entry">
+    <div class="entry-left">
+      <span class="rank">#${index + 1}</span>
+      <span class="team-name">${t.teamName}</span>:
+      <strong>${t.score}</strong>
+    </div>
+    ${isWinner ? `<div class="winner-badge">🏆 Winner</div>` : ""}
+  </div>
+`;
+
 
     if (t.teamCode === teamCode) li.classList.add("current-team");
     if (index === 0) li.classList.add("gold");
