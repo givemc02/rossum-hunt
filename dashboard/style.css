@@ -147,3 +147,10 @@ ul#leaderboard .current-team {
     transform: translateX(0);
   }
 }
+
+.winner {
+  color: gold;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
