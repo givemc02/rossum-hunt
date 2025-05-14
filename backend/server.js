@@ -61,11 +61,11 @@ const teamQuestions = {
 // Score-based riddles
 const scoreRiddles = {
   0: "I speak without a mouth and hear without ears. What am I?",
-  10: "Next QR Destination Riddle: 'I am not alive, but I grow; I don’t have lungs, but I need air.'",
-  20: "Next QR Destination Riddle: 'I have keys but no locks. I have space but no room.'",
-  30: "Next QR Destination Riddle: 'I fly without wings. I cry without eyes. What am I?'",
-  40: "Next QR Destination Riddle: 'The more you take, the more you leave behind. What are they?'",
-  50: "Next QR Destination Riddle: 'I’m the end of the hunt. Find me where winners shine!'"
+  10: "I am not alive, but I grow; I don’t have lungs, but I need air.",
+  20: "I have keys but no locks. I have space but no room.",
+  30: "I fly without wings. I cry without eyes. What am I?",
+  40: "The more you take, the more you leave behind. What are they?",
+  50: "I’m the end of the hunt. Find me where winners shine!"
 };
 
 // Endpoint to get question for a specific team
