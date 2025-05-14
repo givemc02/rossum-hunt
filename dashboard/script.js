@@ -34,8 +34,9 @@ function showDashboard() {
     const dateA = new Date(a.updatedAt || 0);
     const dateB = new Date(b.updatedAt || 0);
 
-    return dateA - dateB;
+    return dateA - dateB;  // Fix: show earlier scorer higher
   })
+
   .forEach((t, index) => {
     const li = document.createElement("li");
     li.innerHTML = `<span class="rank">#${index + 1}</span> ${t.teamName}: <strong>${t.score}</strong>`;
