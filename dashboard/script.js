@@ -59,7 +59,9 @@ fetch(IPV4 + "get-riddle", {
 
   .forEach((t, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span class="rank">#${index + 1}</span> ${t.teamName}: <strong>${t.score}</strong>`;
+    let winnerTag = (t.score === 60) ? ` <span class="winner">🏆 Winner</span>` : "";
+    li.innerHTML = `<span class="rank">#${index + 1}</span> ${t.teamName}${winnerTag}: <strong>${t.score}</strong>`;
+
 
     if (t.teamCode === teamCode) {
       li.classList.add("current-team");
