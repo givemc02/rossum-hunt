@@ -24,6 +24,26 @@ function showDashboard() {
   document.getElementById("teamInfo").innerText = `Hello ${team.teamName}! Your Score: ${team.score}`;
   document.getElementById("letters").innerText = team.lettersUnlocked.join(" ") || "None";
 
+  // Fetch and display the current riddle
+fetch(IPV4 + "get-riddle", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ teamCode })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.riddle) {
+    document.getElementById("riddle").innerText = data.riddle;
+  } else {
+    document.getElementById("riddle").innerText = "No riddle yet. Solve more questions!";
+  }
+})
+.catch(err => {
+  console.error("Failed to fetch riddle:", err);
+  document.getElementById("riddle").innerText = "Error loading riddle.";
+});
+
+
   const leaderboard = document.getElementById("leaderboard");
   leaderboard.innerHTML = "";
 
