@@ -185,12 +185,12 @@ const teamQuestions = {
 
 // Score-based riddles
 const scoreRiddles = {
-  0: "I speak without a mouth and hear without ears. What am I?",
-  10: "I am not alive, but I grow; I don’t have lungs, but I need air.",
-  20: "I have keys but no locks. I have space but no room.",
-  30: "I fly without wings. I cry without eyes. What am I?",
-  40: "The more you take, the more you leave behind. What are they?",
-  50: "I’m the end of the hunt. Find me where winners shine!"
+  0: "Voiceless guides in paper form ,Silent minds that know the norm.",
+  10: "Where logic lives and code is king ,The keys you press make ideas sing.",
+  20: "Codes cant run here ,just take the measure and listen to the 'Cling and Clangs'.",
+  30: "Do you have the capacity to resist the inducing combination of series and parallel universe.",
+  40: "The very first hello to the world inside.",
+  50: "I will take you through the ups and downs of your Everyday timetable."
 };
 
 // Endpoint to get question for a specific team
