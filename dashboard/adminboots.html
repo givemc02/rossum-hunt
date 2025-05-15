@@ -1,79 +1,133 @@
-<!-- dashboard/admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - ROSSUM</title>
+  <title>Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     body {
       background-color: #121212;
-      color: #f0f0f0;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      color: #ffffff;
+      padding: 2rem;
     }
-    h1 { color: #ff4081; }
-    ul {
-      list-style: none;
-      padding: 0;
+    .glow {
+      box-shadow: 0 0 15px rgba(0,255,255,0.6);
     }
-    li {
-      padding: 8px 0;
-      border-bottom: 1px solid #333;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #ff4081;
+    .card {
+      background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
       border: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #e91e63;
+      border-radius: 15px;
     }
   </style>
 </head>
 <body>
-  <h1>Admin Panel</h1>
-  <button onclick="resetAll()">🔄 Reset All</button>
-  <h2>Leaderboard</h2>
-  <ul id="leaderboard"></ul>
+  <div class="container">
+    <h1 class="mb-4 text-center">Admin Dashboard</h1>
+
+    <!-- Leaderboard -->
+    <div class="card p-4 mb-4">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboard" class="list-group list-group-flush text-white"></ul>
+    </div>
+
+    <!-- Reset Button -->
+    <div class="d-grid gap-2 mb-4">
+      <button class="btn btn-danger glow" onclick="resetTeams()">Reset Teams</button>
+    </div>
+
+    <!-- Add Team -->
+    <div class="card p-4 mb-4">
+      <h3>Add Team</h3>
+      <form id="addTeamForm">
+        <input type="text" class="form-control mb-2" id="teamName" placeholder="Team Name" required />
+        <input type="text" class="form-control mb-2" id="teamCode" placeholder="Team Code" required />
+
+        <textarea class="form-control mb-2" id="questionData" rows="4"
+          placeholder="Enter questions as JSON: {&quot;q1&quot;: &quot;Question 1?&quot;, ...}" required></textarea>
+
+        <textarea class="form-control mb-2" id="answerData" rows="4"
+          placeholder="Enter answers as JSON: {&quot;q1&quot;: {&quot;answers&quot;: [&quot;answer&quot;], &quot;points&quot;: 10, &quot;letter&quot;: &quot;R&quot;}, ...}" required></textarea>
+
+        <button type="submit" class="btn btn-primary glow">Add Team</button>
+      </form>
+    </div>
+
+    <!-- Add Riddle -->
+    <div class="card p-4 mb-4">
+      <h3>Add Riddle</h3>
+      <form id="addRiddleForm">
+        <input type="number" class="form-control mb-2" id="riddleScore" placeholder="Score (e.g., 10, 20...)" required />
+        <textarea class="form-control mb-2" id="riddleText" rows="3" placeholder="Riddle text..." required></textarea>
+        <button type="submit" class="btn btn-warning glow">Add Riddle</button>
+      </form>
+    </div>
+  </div>
 
   <script>
-    const API_URL = "https://rossum-hunt.onrender.com";
+    const API = "http://localhost:3000";
 
-    async function fetchTeams() {
-      const res = await fetch(`${API_URL}/teams`);
-      const teams = await res.json();
-
-      const leaderboard = document.getElementById("leaderboard");
-      leaderboard.innerHTML = "";
-
-      teams.sort((a, b) => b.score - a.score).forEach(team => {
-        const li = document.createElement("li");
-        li.textContent = `${team.teamName} - Score: ${team.score} - Letters: ${team.lettersUnlocked.join("")}`;
-        leaderboard.appendChild(li);
-      });
+    function loadLeaderboard() {
+      fetch(`${API}/teams`)
+        .then(res => res.json())
+        .then(data => {
+          const ul = document.getElementById("leaderboard");
+          ul.innerHTML = "";
+          data.sort((a, b) => b.score - a.score);
+          data.forEach(team => {
+            const winner = team.score >= 60 ? " 🏆 Winner!" : "";
+            ul.innerHTML += `<li class="list-group-item bg-dark text-white">${team.teamName} - ${team.score} points ${winner}</li>`;
+          });
+        });
     }
 
-    async function resetAll() {
-      if (!confirm("Are you sure you want to reset all scores and progress?")) return;
-
-      const res = await fetch(`${API_URL}/admin/reset`, {
-        method: "POST"
-      });
-
-      if (res.ok) {
-        alert("All team progress reset.");
-        fetchTeams();
-      } else {
-        alert("Failed to reset.");
-      }
+    function resetTeams() {
+      fetch(`${API}/admin/reset`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message);
+          loadLeaderboard();
+        });
     }
 
-    fetchTeams();
+    document.getElementById("addTeamForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const teamName = document.getElementById("teamName").value.trim();
+      const teamCode = document.getElementById("teamCode").value.trim();
+      const questions = JSON.parse(document.getElementById("questionData").value.trim());
+      const answers = JSON.parse(document.getElementById("answerData").value.trim());
+
+      fetch(`${API}/admin/add-team`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamName, teamCode, questions, answers })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        document.getElementById("addTeamForm").reset();
+        loadLeaderboard();
+      });
+    });
+
+    document.getElementById("addRiddleForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const score = parseInt(document.getElementById("riddleScore").value.trim());
+      const riddle = document.getElementById("riddleText").value.trim();
+
+      fetch(`${API}/admin/add-riddle`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ score, riddle })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        document.getElementById("addRiddleForm").reset();
+      });
+    });
+
+    loadLeaderboard();
   </script>
 </body>
 </html>
