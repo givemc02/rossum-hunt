@@ -3,131 +3,198 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <title>Admin Panel - ROSSUM</title>
   <style>
     body {
       background-color: #121212;
-      color: #ffffff;
-      padding: 2rem;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
     }
-    .glow {
-      box-shadow: 0 0 15px rgba(0,255,255,0.6);
+    h1, h2, h3 {
+      color: #ff4081;
     }
-    .card {
-      background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #ff4081;
       border: none;
-      border-radius: 15px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button:hover {
+      background-color: #e91e63;
+    }
+    input, textarea {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+    }
+    form {
+      margin-top: 30px;
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="mb-4 text-center">Admin Dashboard</h1>
+  <h1>Admin Panel</h1>
 
-    <!-- Leaderboard -->
-    <div class="card p-4 mb-4">
-      <h3>Leaderboard</h3>
-      <ul id="leaderboard" class="list-group list-group-flush text-white"></ul>
-    </div>
+  <button onclick="resetAll()">🔄 Reset All</button>
 
-    <!-- Reset Button -->
-    <div class="d-grid gap-2 mb-4">
-      <button class="btn btn-danger glow" onclick="resetTeams()">Reset Teams</button>
-    </div>
+  <h2>Leaderboard</h2>
+  <ul id="leaderboard"></ul>
 
-    <!-- Add Team -->
-    <div class="card p-4 mb-4">
-      <h3>Add Team</h3>
-      <form id="addTeamForm">
-        <input type="text" class="form-control mb-2" id="teamName" placeholder="Team Name" required />
-        <input type="text" class="form-control mb-2" id="teamCode" placeholder="Team Code" required />
+  <!-- ADD TEAM FORM -->
+  <h2>Add New Team</h2>
+  <form id="addTeamForm">
+    <input type="text" placeholder="Team Name" name="teamName" required />
+    <input type="text" placeholder="Team Code" name="teamCode" required />
 
-        <textarea class="form-control mb-2" id="questionData" rows="4"
-          placeholder="Enter questions as JSON: {&quot;q1&quot;: &quot;Question 1?&quot;, ...}" required></textarea>
+    <h3>Questions & Answers</h3>
+    <div id="questionsContainer"></div>
+    <button type="button" onclick="addQuestion()">➕ Add Question</button><br><br>
 
-        <textarea class="form-control mb-2" id="answerData" rows="4"
-          placeholder="Enter answers as JSON: {&quot;q1&quot;: {&quot;answers&quot;: [&quot;answer&quot;], &quot;points&quot;: 10, &quot;letter&quot;: &quot;R&quot;}, ...}" required></textarea>
+    <button type="submit">✅ Add Team</button>
+  </form>
 
-        <button type="submit" class="btn btn-primary glow">Add Team</button>
-      </form>
-    </div>
-
-    <!-- Add Riddle -->
-    <div class="card p-4 mb-4">
-      <h3>Add Riddle</h3>
-      <form id="addRiddleForm">
-        <input type="number" class="form-control mb-2" id="riddleScore" placeholder="Score (e.g., 10, 20...)" required />
-        <textarea class="form-control mb-2" id="riddleText" rows="3" placeholder="Riddle text..." required></textarea>
-        <button type="submit" class="btn btn-warning glow">Add Riddle</button>
-      </form>
-    </div>
-  </div>
+  <!-- ADD RIDDLE FORM -->
+  <h2>Add Riddle for Score</h2>
+  <form id="addRiddleForm">
+    <input type="number" name="score" placeholder="Score (e.g., 10, 20)" required />
+    <textarea name="riddle" placeholder="Enter riddle for this score..." rows="4" required></textarea>
+    <button type="submit">✅ Add Riddle</button>
+  </form>
 
   <script>
-    const API = "http://localhost:3000";
+    const API_URL = "https://rossum-hunt.onrender.com";
 
-    function loadLeaderboard() {
-      fetch(`${API}/teams`)
-        .then(res => res.json())
-        .then(data => {
-          const ul = document.getElementById("leaderboard");
-          ul.innerHTML = "";
-          data.sort((a, b) => b.score - a.score);
-          data.forEach(team => {
-            const winner = team.score >= 60 ? " 🏆 Winner!" : "";
-            ul.innerHTML += `<li class="list-group-item bg-dark text-white">${team.teamName} - ${team.score} points ${winner}</li>`;
-          });
-        });
+    async function fetchTeams() {
+      const res = await fetch(`${API_URL}/teams`);
+      const teams = await res.json();
+
+      const leaderboard = document.getElementById("leaderboard");
+      leaderboard.innerHTML = "";
+
+      teams.sort((a, b) => b.score - a.score).forEach(team => {
+        const li = document.createElement("li");
+        li.textContent = `${team.teamName} - Score: ${team.score} - Letters: ${team.lettersUnlocked.join("")}`;
+        leaderboard.appendChild(li);
+      });
     }
 
-    function resetTeams() {
-      fetch(`${API}/admin/reset`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-          alert(data.message);
-          loadLeaderboard();
-        });
+    async function resetAll() {
+      if (!confirm("Are you sure you want to reset all scores and progress?")) return;
+
+      const res = await fetch(`${API_URL}/admin/reset`, {
+        method: "POST"
+      });
+
+      if (res.ok) {
+        alert("All team progress reset.");
+        fetchTeams();
+      } else {
+        alert("Failed to reset.");
+      }
     }
 
-    document.getElementById("addTeamForm").addEventListener("submit", (e) => {
+    let questionCount = 0;
+
+    function addQuestion() {
+      const container = document.getElementById("questionsContainer");
+      const div = document.createElement("div");
+      div.style.marginBottom = "10px";
+      div.innerHTML = `
+        <input type="text" name="question${questionCount}" placeholder="Question ${questionCount + 1}" required />
+        <input type="text" name="answer${questionCount}" placeholder="Answer(s) (comma-separated)" required />
+      `;
+      container.appendChild(div);
+      questionCount++;
+    }
+
+    document.getElementById("addTeamForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-      const teamName = document.getElementById("teamName").value.trim();
-      const teamCode = document.getElementById("teamCode").value.trim();
-      const questions = JSON.parse(document.getElementById("questionData").value.trim());
-      const answers = JSON.parse(document.getElementById("answerData").value.trim());
 
-      fetch(`${API}/admin/add-team`, {
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const teamName = formData.get("teamName").trim();
+      const teamCode = formData.get("teamCode").trim();
+
+      const questions = {};
+      const answers = {};
+
+      for (let i = 0; i < questionCount; i++) {
+        const q = formData.get(`question${i}`);
+        const a = formData.get(`answer${i}`);
+        if (q && a) {
+          questions[`question${i + 1}`] = q;
+          answers[`question${i + 1}`] = {
+            answers: a.split(",").map(s => s.trim()),
+            points: 10,
+            letter: "?" // You can manually update letters in the server's JSON if needed
+          };
+        }
+      }
+
+      const res = await fetch(`${API_URL}/admin/add-team`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamName, teamCode, questions, answers })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message);
-        document.getElementById("addTeamForm").reset();
-        loadLeaderboard();
       });
+
+      if (res.ok) {
+        alert("Team added successfully!");
+        form.reset();
+        document.getElementById("questionsContainer").innerHTML = "";
+        questionCount = 0;
+        fetchTeams();
+      } else {
+        alert("Failed to add team.");
+      }
     });
 
-    document.getElementById("addRiddleForm").addEventListener("submit", (e) => {
+    // Add riddle submission
+    document.getElementById("addRiddleForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-      const score = parseInt(document.getElementById("riddleScore").value.trim());
-      const riddle = document.getElementById("riddleText").value.trim();
 
-      fetch(`${API}/admin/add-riddle`, {
+      const formData = new FormData(e.target);
+      const score = parseInt(formData.get("score"));
+      const riddle = formData.get("riddle").trim();
+
+      if (!score || !riddle) {
+        alert("Score and riddle are required.");
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/admin/add-riddle`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ score, riddle })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message);
-        document.getElementById("addRiddleForm").reset();
       });
+
+      if (res.ok) {
+        alert("Riddle added!");
+        e.target.reset();
+      } else {
+        alert("Failed to add riddle.");
+      }
     });
 
-    loadLeaderboard();
+    fetchTeams();
   </script>
 </body>
 </html>
