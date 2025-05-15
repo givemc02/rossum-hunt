@@ -14,68 +14,63 @@ body {
   justify-content: center;
   height: 100vh;
   overflow: hidden;
+  padding: 16px; /* Added for mobile spacing */
 }
 
-/* Glassmorphism container */
+/* Animation for container glow */
 @keyframes glow-pulse {
   0% {
-    box-shadow:
-      0 0 10px rgba(162, 0, 255, 0.3),
-      0 0 20px rgba(162, 0, 255, 0.2),
-      0 0 30px rgba(162, 0, 255, 0.1);
+    box-shadow: 0 0 10px rgba(162, 0, 255, 0.3),
+                0 0 20px rgba(162, 0, 255, 0.2),
+                0 0 30px rgba(162, 0, 255, 0.1);
   }
   50% {
-    box-shadow:
-      0 0 20px rgba(162, 0, 255, 0.5),
-      0 0 40px rgba(162, 0, 255, 0.4),
-      0 0 60px rgba(162, 0, 255, 0.3);
+    box-shadow: 0 0 20px rgba(162, 0, 255, 0.5),
+                0 0 40px rgba(162, 0, 255, 0.4),
+                0 0 60px rgba(162, 0, 255, 0.3);
   }
   100% {
-    box-shadow:
-      0 0 10px rgba(162, 0, 255, 0.3),
-      0 0 20px rgba(162, 0, 255, 0.2),
-      0 0 30px rgba(162, 0, 255, 0.1);
+    box-shadow: 0 0 10px rgba(162, 0, 255, 0.3),
+                0 0 20px rgba(162, 0, 255, 0.2),
+                0 0 30px rgba(162, 0, 255, 0.1);
   }
 }
 
+/* Main container */
 .container {
   background: rgba(30, 30, 30, 0.65);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-radius: 16px;
-
-  border: 1px solid rgba(162, 0, 255, 0.4); /* matches button color */
-
-  padding: 50px 40px;
-  width: 95%;
-  max-width: 620px;
-
-  /* 🌈 Violet glow + animation */
+  border: 1px solid rgba(162, 0, 255, 0.4);
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 500px;
   animation: glow-pulse 2.5s infinite ease-in-out;
+  transition: transform 0.3s ease;
 }
-
 
 .container:hover {
   transform: translateY(-6px);
 }
 
-/* Title */
+/* Heading */
 h2 {
   margin-bottom: 24px;
   color: #ffffff;
   font-weight: 600;
-  font-size: 26px;
+  font-size: 24px;
   text-align: center;
 }
 
+/* Question text */
 .question-block {
-  margin-bottom: 16px; /* Adds space between question and input */
+  margin-bottom: 16px;
   color: #ddd;
   font-size: 16px;
 }
 
-
-/* Input */
+/* Text input */
 input[type="text"] {
   width: 100%;
   padding: 14px 16px;
@@ -98,7 +93,7 @@ input[type="text"]:focus {
   box-shadow: 0 0 8px rgba(102, 170, 255, 0.4);
 }
 
-/* Button */
+/* Button styling */
 button {
   background: linear-gradient(135deg, #4a00e0, #8e2de2);
   color: #fff;
@@ -122,7 +117,7 @@ button:active {
   box-shadow: 0 2px 8px rgba(142, 45, 226, 0.2);
 }
 
-/* Optional output/code section */
+/* Optional code block styling */
 pre {
   background-color: rgba(255, 255, 255, 0.08);
   color: #ddd;
@@ -133,4 +128,26 @@ pre {
   margin-top: 20px;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 20px;
+    border-radius: 12px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  input[type="text"],
+  button {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .question-block {
+    font-size: 15px;
+  }
 }
