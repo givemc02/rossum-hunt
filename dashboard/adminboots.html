@@ -11,9 +11,7 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    h1, h2, h3 {
-      color: #ff4081;
-    }
+    h1 { color: #ff4081; }
     ul {
       list-style: none;
       padding: 0;
@@ -30,29 +28,28 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      border-radius: 6px;
     }
     button:hover {
       background-color: #e91e63;
     }
-    input, textarea {
-      padding: 8px;
-      margin: 5px 0;
+    textarea, input[type="text"], input[type="number"] {
       width: 100%;
-      border: none;
-      border-radius: 4px;
+      margin-top: 4px;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      color: white;
     }
     form {
-      margin-top: 30px;
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 10px;
+      margin-top: 40px;
+      border-top: 2px solid #444;
+      padding-top: 20px;
     }
-    .question-block {
-      border: 1px solid #333;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
+    hr {
+      border: 0;
+      border-top: 1px solid #333;
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -64,36 +61,24 @@
   <h2>Leaderboard</h2>
   <ul id="leaderboard"></ul>
 
-  <!-- ADD TEAM FORM -->
   <h2>Add New Team</h2>
   <form id="addTeamForm">
-    <input type="text" placeholder="Team Name" name="teamName" required />
-    <input type="text" placeholder="Team Code" name="teamCode" required />
+    <input type="text" name="teamCode" placeholder="Team Code (e.g., TEAM007)" required><br>
+    <input type="text" name="teamName" placeholder="Team Name" required><br><br>
 
-    <h3>Questions & Answers</h3>
     <div id="questionsContainer"></div>
-    <button type="button" onclick="addQuestion()">➕ Add Question</button><br><br>
 
-    <button type="submit">✅ Add Team</button>
-  </form>
-
-  <!-- ADD RIDDLE FORM -->
-  <h2>Add Riddle for Score</h2>
-  <form id="addRiddleForm">
-    <input type="number" name="score" placeholder="Score (e.g., 10, 20)" required />
-    <textarea name="riddle" placeholder="Enter riddle for this score..." rows="4" required></textarea>
-    <button type="submit">✅ Add Riddle</button>
+    <button type="submit">➕ Add Team</button>
   </form>
 
   <script>
     const API_URL = "https://rossum-hunt.onrender.com";
-    let questionCount = 0;
+    const leaderboard = document.getElementById("leaderboard");
+    const questionsContainer = document.getElementById("questionsContainer");
 
     async function fetchTeams() {
       const res = await fetch(`${API_URL}/teams`);
       const teams = await res.json();
-
-      const leaderboard = document.getElementById("leaderboard");
       leaderboard.innerHTML = "";
 
       teams.sort((a, b) => b.score - a.score).forEach(team => {
@@ -105,111 +90,81 @@
 
     async function resetAll() {
       if (!confirm("Are you sure you want to reset all scores and progress?")) return;
-
       const res = await fetch(`${API_URL}/admin/reset`, { method: "POST" });
-
       if (res.ok) {
-        alert("All team progress reset.");
+        alert("✅ All team progress reset.");
         fetchTeams();
       } else {
-        alert("Failed to reset.");
+        alert("❌ Failed to reset.");
       }
     }
 
-    function addQuestion() {
-      const container = document.getElementById("questionsContainer");
-      const qIndex = questionCount;
+    // Build 6 question sections
+    for (let i = 1; i <= 6; i++) {
+      const qDiv = document.createElement("div");
+      const qId = `question${i}`;
+      qDiv.innerHTML = `
+        <h3>${qId}</h3>
+        <textarea name="${qId}_text" placeholder="Question text" required></textarea><br>
 
-      const block = document.createElement("div");
-      block.className = "question-block";
-      block.innerHTML = `
-        <input type="text" name="question${qIndex}" placeholder="Question ${qIndex + 1}" required />
-        <div id="answers${qIndex}">
-          <input type="text" name="answer${qIndex}[]" placeholder="Answer 1" required />
+        <div id="${qId}_answers_container">
+          <input type="text" name="${qId}_answer[]" placeholder="Correct answer" required>
         </div>
-        <button type="button" onclick="addAnswer(${qIndex})">➕ Add Another Answer</button>
-      `;
+        <button type="button" onclick="addAnswerField('${qId}')">➕ Add Another Answer</button><br><br>
 
-      container.appendChild(block);
-      questionCount++;
+        <input type="number" name="${qId}_points" placeholder="Points" required><br>
+        <input type="text" name="${qId}_letter" placeholder="Letter to unlock" maxlength="1" required><br>
+        <hr>
+      `;
+      questionsContainer.appendChild(qDiv);
     }
 
-    function addAnswer(index) {
-      const answersDiv = document.getElementById(`answers${index}`);
-      const inputCount = answersDiv.querySelectorAll("input").length;
+    function addAnswerField(qId) {
+      const container = document.getElementById(`${qId}_answers_container`);
       const input = document.createElement("input");
       input.type = "text";
-      input.name = `answer${index}[]`;
-      input.placeholder = `Answer ${inputCount + 1}`;
-      input.required = true;
-      answersDiv.appendChild(input);
+      input.name = `${qId}_answer[]`;
+      input.placeholder = "Correct answer";
+      container.appendChild(input);
     }
 
     document.getElementById("addTeamForm").addEventListener("submit", async function (e) {
       e.preventDefault();
+      const formData = new FormData(this);
 
-      const form = e.target;
-      const formData = new FormData(form);
-      const teamName = formData.get("teamName").trim();
-      const teamCode = formData.get("teamCode").trim();
-
+      const teamCode = formData.get("teamCode");
+      const teamName = formData.get("teamName");
       const questions = {};
       const answers = {};
 
-      for (let i = 0; i < questionCount; i++) {
-        const q = formData.get(`question${i}`);
-        const aList = formData.getAll(`answer${i}[]`).map(s => s.trim()).filter(Boolean);
-
-        if (q && aList.length > 0) {
-          questions[`question${i + 1}`] = q;
-          answers[`question${i + 1}`] = {
-            answers: aList,
-            points: 10,
-            letter: "?" // You can assign actual letters later if needed
-          };
-        }
+      for (let i = 1; i <= 6; i++) {
+        const qId = `question${i}`;
+        questions[qId] = formData.get(`${qId}_text`);
+        answers[qId] = {
+          answers: formData.getAll(`${qId}_answer[]`),
+          points: parseInt(formData.get(`${qId}_points`)),
+          letter: formData.get(`${qId}_letter`)
+        };
       }
+
+      const body = {
+        teamCode,
+        teamName,
+        questions,
+        answers
+      };
 
       const res = await fetch(`${API_URL}/admin/add-team`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teamName, teamCode, questions, answers })
+        body: JSON.stringify(body)
       });
 
       if (res.ok) {
-        alert("Team added successfully!");
-        form.reset();
-        document.getElementById("questionsContainer").innerHTML = "";
-        questionCount = 0;
-        fetchTeams();
+        alert("✅ Team added!");
+        this.reset();
       } else {
-        alert("Failed to add team.");
-      }
-    });
-
-    document.getElementById("addRiddleForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(e.target);
-      const score = parseInt(formData.get("score"));
-      const riddle = formData.get("riddle").trim();
-
-      if (!score || !riddle) {
-        alert("Score and riddle are required.");
-        return;
-      }
-
-      const res = await fetch(`${API_URL}/admin/add-riddle`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ score, riddle })
-      });
-
-      if (res.ok) {
-        alert("Riddle added!");
-        e.target.reset();
-      } else {
-        alert("Failed to add riddle.");
+        alert("❌ Failed to add team.");
       }
     });
 
