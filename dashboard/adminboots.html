@@ -71,6 +71,13 @@
     <button type="submit">➕ Add Team</button>
   </form>
 
+  <form id="addRiddleForm">
+    <h2>Add Riddle for Score</h2>
+    <input type="number" name="score" placeholder="Score (e.g., 10)" required><br>
+    <textarea name="riddle" placeholder="Enter the riddle text..." required></textarea><br>
+    <button type="submit">➕ Add Riddle</button>
+  </form>
+
   <script>
     const API_URL = "https://rossum-hunt.onrender.com";
     const leaderboard = document.getElementById("leaderboard");
@@ -83,7 +90,9 @@
 
       teams.sort((a, b) => b.score - a.score).forEach(team => {
         const li = document.createElement("li");
-        li.textContent = `${team.teamName} - Score: ${team.score} - Letters: ${team.lettersUnlocked.join("")}`;
+        const letters = team.lettersUnlocked.join("");
+        const status = team.score >= 60 ? " 🏆 Winner" : "";
+        li.textContent = `${team.teamName} - Score: ${team.score} - Letters: ${letters}${status}`;
         leaderboard.appendChild(li);
       });
     }
@@ -99,7 +108,6 @@
       }
     }
 
-    // Build 6 question sections
     for (let i = 1; i <= 6; i++) {
       const qDiv = document.createElement("div");
       const qId = `question${i}`;
@@ -163,8 +171,30 @@
       if (res.ok) {
         alert("✅ Team added!");
         this.reset();
+        fetchTeams();
       } else {
         alert("❌ Failed to add team.");
+      }
+    });
+
+    document.getElementById("addRiddleForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      const score = parseInt(formData.get("score"));
+      const riddle = formData.get("riddle");
+
+      const res = await fetch(`${API_URL}/admin/add-riddle`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ score, riddle })
+      });
+
+      if (res.ok) {
+        alert("✅ Riddle added for score " + score);
+        this.reset();
+      } else {
+        alert("❌ Failed to add riddle.");
       }
     });
 
