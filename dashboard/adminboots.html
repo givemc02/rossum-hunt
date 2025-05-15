@@ -48,6 +48,12 @@
       padding: 20px;
       border-radius: 10px;
     }
+    .question-block {
+      border: 1px solid #333;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -81,6 +87,7 @@
 
   <script>
     const API_URL = "https://rossum-hunt.onrender.com";
+    let questionCount = 0;
 
     async function fetchTeams() {
       const res = await fetch(`${API_URL}/teams`);
@@ -99,9 +106,7 @@
     async function resetAll() {
       if (!confirm("Are you sure you want to reset all scores and progress?")) return;
 
-      const res = await fetch(`${API_URL}/admin/reset`, {
-        method: "POST"
-      });
+      const res = await fetch(`${API_URL}/admin/reset`, { method: "POST" });
 
       if (res.ok) {
         alert("All team progress reset.");
@@ -111,18 +116,33 @@
       }
     }
 
-    let questionCount = 0;
-
     function addQuestion() {
       const container = document.getElementById("questionsContainer");
-      const div = document.createElement("div");
-      div.style.marginBottom = "10px";
-      div.innerHTML = `
-        <input type="text" name="question${questionCount}" placeholder="Question ${questionCount + 1}" required />
-        <input type="text" name="answer${questionCount}" placeholder="Answer(s) (comma-separated)" required />
+      const qIndex = questionCount;
+
+      const block = document.createElement("div");
+      block.className = "question-block";
+      block.innerHTML = `
+        <input type="text" name="question${qIndex}" placeholder="Question ${qIndex + 1}" required />
+        <div id="answers${qIndex}">
+          <input type="text" name="answer${qIndex}[]" placeholder="Answer 1" required />
+        </div>
+        <button type="button" onclick="addAnswer(${qIndex})">➕ Add Another Answer</button>
       `;
-      container.appendChild(div);
+
+      container.appendChild(block);
       questionCount++;
+    }
+
+    function addAnswer(index) {
+      const answersDiv = document.getElementById(`answers${index}`);
+      const inputCount = answersDiv.querySelectorAll("input").length;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = `answer${index}[]`;
+      input.placeholder = `Answer ${inputCount + 1}`;
+      input.required = true;
+      answersDiv.appendChild(input);
     }
 
     document.getElementById("addTeamForm").addEventListener("submit", async function (e) {
@@ -130,7 +150,6 @@
 
       const form = e.target;
       const formData = new FormData(form);
-
       const teamName = formData.get("teamName").trim();
       const teamCode = formData.get("teamCode").trim();
 
@@ -139,13 +158,14 @@
 
       for (let i = 0; i < questionCount; i++) {
         const q = formData.get(`question${i}`);
-        const a = formData.get(`answer${i}`);
-        if (q && a) {
+        const aList = formData.getAll(`answer${i}[]`).map(s => s.trim()).filter(Boolean);
+
+        if (q && aList.length > 0) {
           questions[`question${i + 1}`] = q;
           answers[`question${i + 1}`] = {
-            answers: a.split(",").map(s => s.trim()),
+            answers: aList,
             points: 10,
-            letter: "?" // You can manually update letters in the server's JSON if needed
+            letter: "?" // You can assign actual letters later if needed
           };
         }
       }
@@ -167,7 +187,6 @@
       }
     });
 
-    // Add riddle submission
     document.getElementById("addRiddleForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
