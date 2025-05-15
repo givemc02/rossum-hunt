@@ -1,3 +1,4 @@
+<!-- dashboard/admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +22,7 @@
       border-bottom: 1px solid #333;
     }
     button {
-      margin-top: 10px;
+      margin-top: 20px;
       padding: 10px 20px;
       background-color: #ff4081;
       border: none;
@@ -32,53 +33,22 @@
     button:hover {
       background-color: #e91e63;
     }
-    textarea, input[type="text"], input[type="number"] {
-      width: 100%;
-      margin-top: 4px;
-      margin-bottom: 10px;
-      padding: 8px;
-      background: #1e1e1e;
-      border: 1px solid #333;
-      color: white;
-    }
-    form {
-      margin-top: 40px;
-      border-top: 2px solid #444;
-      padding-top: 20px;
-    }
-    hr {
-      border: 0;
-      border-top: 1px solid #333;
-      margin: 20px 0;
-    }
   </style>
 </head>
 <body>
   <h1>Admin Panel</h1>
-
   <button onclick="resetAll()">🔄 Reset All</button>
-
   <h2>Leaderboard</h2>
   <ul id="leaderboard"></ul>
 
-  <h2>Add New Team</h2>
-  <form id="addTeamForm">
-    <input type="text" name="teamCode" placeholder="Team Code (e.g., TEAM007)" required><br>
-    <input type="text" name="teamName" placeholder="Team Name" required><br><br>
-
-    <div id="questionsContainer"></div>
-
-    <button type="submit">➕ Add Team</button>
-  </form>
-
   <script>
     const API_URL = "https://rossum-hunt.onrender.com";
-    const leaderboard = document.getElementById("leaderboard");
-    const questionsContainer = document.getElementById("questionsContainer");
 
     async function fetchTeams() {
       const res = await fetch(`${API_URL}/teams`);
       const teams = await res.json();
+
+      const leaderboard = document.getElementById("leaderboard");
       leaderboard.innerHTML = "";
 
       teams.sort((a, b) => b.score - a.score).forEach(team => {
@@ -90,83 +60,18 @@
 
     async function resetAll() {
       if (!confirm("Are you sure you want to reset all scores and progress?")) return;
-      const res = await fetch(`${API_URL}/admin/reset`, { method: "POST" });
-      if (res.ok) {
-        alert("✅ All team progress reset.");
-        fetchTeams();
-      } else {
-        alert("❌ Failed to reset.");
-      }
-    }
 
-    // Build 6 question sections
-    for (let i = 1; i <= 6; i++) {
-      const qDiv = document.createElement("div");
-      const qId = `question${i}`;
-      qDiv.innerHTML = `
-        <h3>${qId}</h3>
-        <textarea name="${qId}_text" placeholder="Question text" required></textarea><br>
-
-        <div id="${qId}_answers_container">
-          <input type="text" name="${qId}_answer[]" placeholder="Correct answer" required>
-        </div>
-        <button type="button" onclick="addAnswerField('${qId}')">➕ Add Another Answer</button><br><br>
-
-        <input type="number" name="${qId}_points" placeholder="Points" required><br>
-        <input type="text" name="${qId}_letter" placeholder="Letter to unlock" maxlength="1" required><br>
-        <hr>
-      `;
-      questionsContainer.appendChild(qDiv);
-    }
-
-    function addAnswerField(qId) {
-      const container = document.getElementById(`${qId}_answers_container`);
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = `${qId}_answer[]`;
-      input.placeholder = "Correct answer";
-      container.appendChild(input);
-    }
-
-    document.getElementById("addTeamForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-
-      const teamCode = formData.get("teamCode");
-      const teamName = formData.get("teamName");
-      const questions = {};
-      const answers = {};
-
-      for (let i = 1; i <= 6; i++) {
-        const qId = `question${i}`;
-        questions[qId] = formData.get(`${qId}_text`);
-        answers[qId] = {
-          answers: formData.getAll(`${qId}_answer[]`),
-          points: parseInt(formData.get(`${qId}_points`)),
-          letter: formData.get(`${qId}_letter`)
-        };
-      }
-
-      const body = {
-        teamCode,
-        teamName,
-        questions,
-        answers
-      };
-
-      const res = await fetch(`${API_URL}/admin/add-team`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+      const res = await fetch(`${API_URL}/admin/reset`, {
+        method: "POST"
       });
 
       if (res.ok) {
-        alert("✅ Team added!");
-        this.reset();
+        alert("All team progress reset.");
+        fetchTeams();
       } else {
-        alert("❌ Failed to add team.");
+        alert("Failed to reset.");
       }
-    });
+    }
 
     fetchTeams();
   </script>
