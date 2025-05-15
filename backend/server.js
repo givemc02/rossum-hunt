@@ -13,23 +13,85 @@ app.use(express.json());
 
 // Correct answers and rewards
 const correctAnswers = {
-  TEAM123: {
-    question1: { answers: ["Dictionary", "dictionary"], points: 10, letter: "R" },
-    question2: { answers: ["Semaphore", "semaphore"], points: 10, letter: "O" },
-    question3: { answers: ["Network layer", "network layer", "Nertwork Layer"], points: 10, letter: "S" },
-    question4: { answers: ["UTF-8", "utf-8", "utf8", "UTF8"], points: 10, letter: "S" },
-    question5: { answers: ["Third Normal Form", "3NF", "3nf", "third normal form"], points: 10, letter: "U" },
-    question6: { answers: ["Code generation", "Code Generation", "code generation"], points: 10, letter: "M" },
-
+  Wizards1289: {
+    question1: { answers: ["Kernel", "kernel"], points: 10, letter: "R" },
+    question2: { answers: ["Byte", "byte"], points: 10, letter: "O" },
+    question3: { answers: ["SFTP", "sftp"], points: 10, letter: "S" },
+    question4: { answers: ["Constexpr", "constexpr"], points: 10, letter: "S" },
+    question5: { answers: ["Deque", "deque"], points: 10, letter: "U" },
+    question6: { answers: ["Default Constructor", "default constructor"], points: 10, letter: "M" },
   },
-  TEAM456: {
-    question1: { answers: ["Clone", "clone"], points: 10, letter: "R" },
-    question2: { answers: ["Merge sort", "merge sort"], points: 10, letter: "O" },
-    question3: { answers: ["Client-Server", "client-server", "Client-server"], points: 10, letter: "S" },
-    question4: { answers: ["pwd"], points: 10, letter: "S" },
-    question5: { answers: ["Symbol table", "Symbol Table", "symbol table"], points: 10, letter: "U" },
-    question6: { answers: ["Sigmoid", "sigmoid"], points: 10, letter: "M" },
-
+  Liquid6384: {
+    question1: { answers: ["Mutex", "mutex"], points: 10, letter: "R" },
+    question2: { answers: ["Paging", "paging"], points: 10, letter: "O" },
+    question3: { answers: ["Builder", "builder"], points: 10, letter: "S" },
+    question4: { answers: ["Dangling", "dangling"], points: 10, letter: "S" },
+    question5: { answers: ["Static Member Function", "static member function"], points: 10, letter: "U" },
+    question6: { answers: ["Variable Scope Leakage", "variable scope leakage"], points: 10, letter: "M" },
+  },
+  Cache9187: {
+    question1: { answers: ["Seven", "seven"], points: 10, letter: "R" },
+    question2: { answers: ["63"], points: 10, letter: "O" },
+    question3: { answers: ["Eval", "eval"], points: 10, letter: "S" },
+    question4: { answers: ["RAM", "ram"], points: 10, letter: "S" },
+    question5: { answers: ["Virtual", "virtual"], points: 10, letter: "U" },
+    question6: { answers: ["Constexpr", "constexpr"], points: 10, letter: "M" },
+  },
+  Hostle9794: {
+    question1: { answers: ["Array", "array"], points: 10, letter: "R" },
+    question2: { answers: ["Seven", "seven"], points: 10, letter: "O" },
+    question3: { answers: ["4"], points: 10, letter: "S" },
+    question4: { answers: ["Object", "object"], points: 10, letter: "S" },
+    question5: { answers: ["Readonly", "readonly"], points: 10, letter: "U" },
+    question6: { answers: ["Virtual Inheritance", "virtual inheritance"], points: 10, letter: "M" },
+  },
+  Digging4947: {
+    question1: { answers: ["2:10", "2.10"], points: 10, letter: "R" },
+    question2: { answers: ["Overflow", "overflow"], points: 10, letter: "O" },
+    question3: { answers: ["XOR", "xor"], points: 10, letter: "S" },
+    question4: { answers: ["DISTINCT", "distinct"], points: 10, letter: "S" },
+    question5: { answers: ["Dynamic", "dynamic"], points: 10, letter: "U" },
+    question6: { answers: ["Factory", "factory"], points: 10, letter: "M" },
+  },
+  Enigmatic5227: {
+    question1: { answers: ["Rebase", "rebase"], points: 10, letter: "R" },
+    question2: { answers: ["Bubble sort", "bubble sort"], points: 10, letter: "O" },
+    question3: { answers: ["Exception", "exception"], points: 10, letter: "S" },
+    question4: { answers: ["Assignment", "assignment"], points: 10, letter: "S" },
+    question5: { answers: ["Destructor", "destructor"], points: 10, letter: "U" },
+    question6: { answers: ["Shallow Copy", "shallow copy"], points: 10, letter: "M" },
+  },
+  Crashers5488: {
+    question1: { answers: ["pwd", "PWD"], points: 10, letter: "R" },
+    question2: { answers: ["Stack pointer", "stack pointer"], points: 10, letter: "O" },
+    question3: { answers: ["6"], points: 10, letter: "S" },
+    question4: { answers: ["Polymorphic Object", "polymorphic object"], points: 10, letter: "S" },
+    question5: { answers: ["Memoization", "memoization"], points: 10, letter: "U" },
+    question6: { answers: ["Singleton", "singleton"], points: 10, letter: "M" },
+  },
+  Elite7764: {
+    question1: { answers: ["Map", "map"], points: 10, letter: "R" },
+    question2: { answers: ["Tuple", "tuple"], points: 10, letter: "O" },
+    question3: { answers: ["Set", "set"], points: 10, letter: "S" },
+    question4: { answers: ["Factory", "factory"], points: 10, letter: "S" },
+    question5: { answers: ["Leak", "leak"], points: 10, letter: "U" },
+    question6: { answers: ["Operator Overloading", "operator overloading"], points: 10, letter: "M" },
+  },
+  Hustle6873: {
+    question1: { answers: ["5"], points: 10, letter: "R" },
+    question2: { answers: ["6"], points: 10, letter: "O" },
+    question3: { answers: ["Modulo", "modulo"], points: 10, letter: "S" },
+    question4: { answers: ["DHCP", "dhcp"], points: 10, letter: "S" },
+    question5: { answers: ["Symmetric", "symmetric"], points: 10, letter: "U" },
+    question6: { answers: ["Lambda Expression", "lambda expression"], points: 10, letter: "M" },
+  },
+  Codelog8535: {
+    question1: { answers: ["Asterisk", "*", "asterisk"], points: 10, letter: "R" },
+    question2: { answers: ["313"], points: 10, letter: "O" },
+    question3: { answers: ["Vector", "vector"], points: 10, letter: "S" },
+    question4: { answers: ["Dict", "dict"], points: 10, letter: "S" },
+    question5: { answers: ["Leak", "leak"], points: 10, letter: "U" },
+    question6: { answers: ["Priority_queue", "priority_queue"], points: 10, letter: "M" },
   }
 };
 
@@ -39,23 +101,86 @@ const correctSequence = ["R", "O", "S", "S", "U", "M"];
 
 // Per-team custom questions
 const teamQuestions = {
-  TEAM123: {
-    question1: `Which data structure is implemented as a hash table but has a fixed size and stores items using a key-value mapping?`,
-    question2: `What Python construct allows multiple threads to run concurrently without the risk of race conditions, using a shared resource?`,
-    question3: `What layer of the OSI model is responsible for routing packets and providing logical addressing?`,
-    question4: `What encoding format is commonly used to represent Unicode characters as a sequence of bytes, ensuring compatibility with ASCII?`,
-    question5: `What normal form eliminates transitive dependencies in a relational database schema?`,
-    question6: `Which phase of a compiler converts a high-level programming language to machine code instructions?`
-
+  Wizards1289: {
+    question1: "Not stack, not heap, but grows downward.",
+    question2: "I hold 256 keys, but only one can open at a time.",
+    question3: "Protocol used for secure file transfer over SSH.",
+    question4: "Which specifier prevents a function from being evaluated at runtime if a compile-time value is possible?",
+    question5: "Which container allows O(1) insertions/removals from both ends but not from the middle?",
+    question6: "Born from nothing, I initialize the world. I take no input, but I build from scratch. Who am I?",
   },
-  TEAM456: {
-    question1: `In Git, what command is used to download a remote repository history and content into your local directory?`,
-    question2: `A sorting algorithm that consistently divides the data in half before merging the parts together has a time complexity of O(n log n) in all cases.`,
-    question3: `A system design pattern where the client and server communicate through HTTP APIs, ensuring decoupling, is widely used in modern web architectures.`,
-    question4: `The Unix command that reveals the current working directory of the shell session.`,
-    question5: `The table that holds identifiers, their types, and scopes during code compilation.`,
-    question6: `Activation function with output strictly between 0 and 1, often used in logistic regression.`
-  }
+  Liquid6384: {
+    question1: "Which keyword prevents data races in multithreading?",
+    question2: "Which memory technique moves data between RAM and disk?",
+    question3: "Which pattern constructs a complex object step-by-step, often used for UIs or config objects?",
+    question4: "What issue occurs when memory is used after being freed?",
+    question5: "I seem like a method, but I don’t belong to an object. I act without an instance. What am I?",
+    question6: "You declare me in a loop, but I haunt you outside. I'm a trap in disguise. What mistake am I?",
+  },
+  Cache9187: {
+    question1: "An odd prime less than 10 and used in hash base.",
+    question2: "I am a 2-digit number. My tens digit is double my units digit. If you reverse me, I decrease by 27.",
+    question3: "Built-in function to dynamically evaluate a string as Python expression.",
+    question4: "I grow with you but vanish on exit. I am memory, but only briefly.",
+    question5: "When a class inherits two classes that each inherit from the same base class, the ambiguity is resolved using which type of inheritance?",
+    question6: "Which specifier prevents a function from being evaluated at runtime if a compile-time value is possible?",
+  },
+  Hostle9794: {
+    question1: "Which container stores elements of the same data type in contiguous memory locations?",
+    question2: "An odd prime less than 10 and used in hash base.",
+    question3: "How many sides does a square root of a cube have? (Numeric answer)",
+    question4: "Which programming concept allows combining data and functions into a single unit?",
+    question5: "A class member that cannot be modified after initialization is marked as?",
+    question6: "Which inheritance type solves the diamond problem in C++?",
+  },
+  Digging4947: {
+    question1: "What is the binary representation of decimal 2.625?",
+    question2: "Integer overflow leads to unexpected behavior. What is this phenomenon called?",
+    question3: "Which bitwise operation returns 1 only if exactly one of the bits is 1?",
+    question4: "Which SQL keyword ensures unique values in the result set?",
+    question5: "Which language feature allows allocation of memory during runtime?",
+    question6: "Which design pattern provides a way to delegate the instantiation logic to subclasses?",
+  },
+  Enigmatic5227: {
+    question1: "Which Git command is used to apply changes from one branch onto another without creating a merge commit?",
+    question2: "Which sorting algorithm repeatedly swaps adjacent elements if they are in the wrong order?",
+    question3: "Which C++ mechanism allows catching and handling runtime errors?",
+    question4: "Which operator is overloaded during copy assignment in C++?",
+    question5: "Which special class method is invoked automatically during object destruction?",
+    question6: "A copy that shares references rather than values is known as what type of copy?",
+  },
+  Crashers5488: {
+    question1: "Which command prints the current working directory in Linux?",
+    question2: "Which register points to the top of the current function call’s stack frame?",
+    question3: "How many bytes are in 3-bit hex code?",
+    question4: "An object of a class with at least one virtual function is called a?",
+    question5: "What optimization technique stores previously computed results to avoid recomputation?",
+    question6: "Which pattern ensures a class has only one instance and provides a global access point?",
+  },
+  Elite7764: {
+    question1: "Which STL container stores key-value pairs in a sorted order by default?",
+    question2: "Which STL structure can be used to store a group of values with different data types?",
+    question3: "Which container stores unique elements in sorted order?",
+    question4: "Which pattern provides an interface for creating families of related objects without specifying their concrete classes?",
+    question5: "When memory is not deallocated properly, it leads to a?",
+    question6: "Which feature allows defining how operators behave for class objects?",
+  },
+  Hustle6873: {
+    question1: "How many distinct prime numbers are less than 10?",
+    question2: "How many legs do 3 insects and 1 spider have in total?",
+    question3: "What operation finds the remainder of division?",
+    question4: "Which network protocol assigns dynamic IP addresses?",
+    question5: "Which encryption method uses the same key for encryption and decryption?",
+    question6: "What is the name of the anonymous function introduced in C++11?",
+  },
+  Codelog8535: {
+    question1: "Which symbol is used for pointer declaration in C++?",
+    question2: "Reverse of 313 is?",
+    question3: "Which STL container provides dynamic array with automatic resizing?",
+    question4: "Which Python structure stores key-value pairs?",
+    question5: "What is it called when memory is not released properly?",
+    question6: "Which STL container provides a constant-time priority queue?",
+  },
 };
 
 // Score-based riddles
