@@ -159,6 +159,10 @@ ul#leaderboard .current-team {
   color: #eee;
 }
 
+.riddle-box p {
+  margin-top: 6px;
+}
+
 /* Leaderboard row layout */
 .leaderboard-entry {
   display: flex;
@@ -190,4 +194,5 @@ ul#leaderboard .current-team {
   padding: 10px;
   border-radius: 6px;
 }
+
 
