@@ -14,7 +14,6 @@ const RIDDLES_FILE = path.join(__dirname, "..", "dashboard", "data", "riddles.js
 app.use(cors());
 app.use(express.json());
 
-// Load data safely
 const loadJson = (filePath) => {
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -27,10 +26,8 @@ let correctAnswers = loadJson(ANSWERS_FILE);
 let teamQuestions = loadJson(QUESTIONS_FILE);
 let scoreRiddles = loadJson(RIDDLES_FILE);
 
-// Sequence of expected letters
 const correctSequence = ["R", "O", "S", "S", "U", "M"];
 
-// Get question
 app.post("/get-question", (req, res) => {
   const { teamCode, questionId } = req.body;
   const teamSet = teamQuestions[teamCode];
@@ -40,7 +37,6 @@ app.post("/get-question", (req, res) => {
   res.json({ question: teamSet[questionId] });
 });
 
-// Get teams
 app.get("/teams", (req, res) => {
   fs.readFile(TEAMS_FILE, "utf8", (err, data) => {
     if (err) return res.status(500).json({ error: "Failed to read teams file" });
@@ -48,7 +44,6 @@ app.get("/teams", (req, res) => {
   });
 });
 
-// Get riddle
 app.post("/get-riddle", (req, res) => {
   const { teamCode } = req.body;
   if (!teamCode) return res.status(400).json({ error: "Missing team code." });
@@ -61,7 +56,6 @@ app.post("/get-riddle", (req, res) => {
   res.json({ riddle });
 });
 
-// Submit answer
 app.post("/submit-answer", (req, res) => {
   const { teamCode, questionId, answer } = req.body;
 
@@ -102,14 +96,15 @@ app.post("/submit-answer", (req, res) => {
     team.lettersUnlocked.push(expected.letter);
     team.answeredQuestions.push(questionId);
 
+    const riddle = scoreRiddles[team.score] || null;
+
     fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2), (err) => {
       if (err) return res.status(500).json({ error: "Failed to update team file" });
-      res.json({ message: "Correct answer!", team });
+      res.json({ message: "Correct answer!", team, riddle });
     });
   });
 });
 
-// Reset teams
 app.post("/admin/reset", (req, res) => {
   fs.readFile(TEAMS_FILE, "utf8", (err, data) => {
     if (err) return res.status(500).json({ error: "Could not read teams file." });
@@ -130,7 +125,6 @@ app.post("/admin/reset", (req, res) => {
   });
 });
 
-// ✅ Add a new team
 app.post("/admin/add-team", (req, res) => {
   const { teamCode, teamName, answers, questions } = req.body;
   if (!teamCode || !teamName || !answers || !questions) {
@@ -162,7 +156,6 @@ app.post("/admin/add-team", (req, res) => {
   res.json({ message: "Team added successfully." });
 });
 
-// ✅ Add a riddle for a score
 app.post("/admin/add-riddle", (req, res) => {
   const { score, riddle } = req.body;
   if (typeof score !== "number" || !riddle) {
