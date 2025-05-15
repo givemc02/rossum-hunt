@@ -137,7 +137,6 @@ app.post("/admin/add-team", (req, res) => {
     return res.status(400).json({ error: "Missing team data." });
   }
 
-  // Add to teams.json
   const teams = loadJson(TEAMS_FILE);
   if (teams.find(t => t.teamCode === teamCode)) {
     return res.status(400).json({ error: "Team code already exists." });
@@ -152,14 +151,11 @@ app.post("/admin/add-team", (req, res) => {
     updatedAt: new Date().toISOString()
   });
 
-  // Save team
   fs.writeFileSync(TEAMS_FILE, JSON.stringify(teams, null, 2));
 
-  // Save answers
   correctAnswers[teamCode] = answers;
   fs.writeFileSync(ANSWERS_FILE, JSON.stringify(correctAnswers, null, 2));
 
-  // Save questions
   teamQuestions[teamCode] = questions;
   fs.writeFileSync(QUESTIONS_FILE, JSON.stringify(teamQuestions, null, 2));
 
